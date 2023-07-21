@@ -1,19 +1,21 @@
 import React from 'react';
 
 import './App.css';
+import { Store } from 'redux';
 
 type Props = {
-  value: number;
-  onIncrement: () => void;
-  onDecrement: () => void;
+  store: Store;
 };
 
-function App({ value, onIncrement, onDecrement }: Props) {
+function App({ store }: Props) {
   return (
     <div className='App'>
-      Clicked :{value} times
-      <button onClick={onIncrement}>+</button>
-      <button onClick={onDecrement}>-</button>
+      <div className='CounterApp'>
+        <button onClick={() => store.dispatch({ type: 'INCREMENT' })}>+</button>
+        <span> {store.getState().counter} </span>
+        <button onClick={() => store.dispatch({ type: 'DECREMENT' })}>-</button>
+      </div>
+      <div></div>
     </div>
   );
 }
