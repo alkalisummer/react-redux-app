@@ -1,13 +1,25 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import './App.css';
 import { useDispatch } from 'react-redux';
 import { useAppSelector } from './reducers/hooks';
+import { fetchPosts } from './actions/posts';
+
+interface Post {
+  userId: number;
+  id: number;
+  title: string;
+}
 
 function App() {
   const dispatch = useDispatch();
   const counter = useAppSelector((state) => state.counter);
   const todo: string[] = useAppSelector((state) => state.todo);
+  const posts: Post[] = useAppSelector((state) => state.posts);
   const [todoValue, setTodoValue] = useState('');
+
+  useEffect(() => {
+    dispatch(fetchPosts());
+  }, []);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setTodoValue(e.target.value);
@@ -40,6 +52,12 @@ function App() {
           />
           <button type='submit'>저장</button>
         </form>
+
+        <ul>
+          {posts.map((post, idx) => (
+            <li key={idx}>{post.title}</li>
+          ))}
+        </ul>
       </div>
     </div>
   );
