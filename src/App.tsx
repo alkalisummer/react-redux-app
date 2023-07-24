@@ -1,21 +1,46 @@
-import React from 'react';
-
+import React, { useState } from 'react';
 import './App.css';
-import { Store } from 'redux';
+import { useDispatch } from 'react-redux';
+import { useAppSelector } from './reducers/hooks';
 
-type Props = {
-  store: Store;
-};
+function App() {
+  const dispatch = useDispatch();
+  const counter = useAppSelector((state) => state.counter);
+  const todo: string[] = useAppSelector((state) => state.todo);
+  const [todoValue, setTodoValue] = useState('');
 
-function App({ store }: Props) {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setTodoValue(e.target.value);
+  };
+
+  const addTodo = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    dispatch({ type: 'ADD_TODO', text: todoValue });
+    setTodoValue('');
+  };
+
   return (
     <div className='App'>
-      <div className='CounterApp'>
-        <button onClick={() => store.dispatch({ type: 'INCREMENT' })}>+</button>
-        <span> {store.getState().counter} </span>
-        <button onClick={() => store.dispatch({ type: 'DECREMENT' })}>-</button>
+      <div className='counterApp'>
+        <button onClick={() => dispatch({ type: 'INCREMENT' })}>+</button>
+        <span> {counter} </span>
+        <button onClick={() => dispatch({ type: 'DECREMENT' })}>-</button>
       </div>
-      <div></div>
+      <div className='todoApp'>
+        <ul>
+          {todo.map((obj, idx) => (
+            <li key={idx}>{obj}</li>
+          ))}
+        </ul>
+        <form onSubmit={addTodo}>
+          <input
+            type='text'
+            value={todoValue}
+            onChange={handleChange}
+          />
+          <button type='submit'>저장</button>
+        </form>
+      </div>
     </div>
   );
 }
